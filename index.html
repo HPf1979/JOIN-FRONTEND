@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="./js/mini_backend.js"></script>
+  <script src="./js/script.js"></script>
+  <script src="./js/index.js"></script>
+
+  <link rel="stylesheet" href="styles/index.css" />
+
+
+  <title>JOIN</title>
+</head>
+
+<body onload="initIndex()">
+  <main>
+    <div class="main-container">
+      <div class="login-window-container">
+        <div class="login-window-content">
+          <div class="login-window-title">
+            <img class="title-img" src="./src/img/logo.png">
+            <h1>Log-In</h1>
+          </div>
+          <div class="login-section">
+            <form onsubmit="checkForm(); return false">
+              <div class="login-section-email">
+                <span>E-Mail</span>
+                <input required class="input-neutral" id="email" type="email">
+              </div>
+              <div class="login-section-password">
+                <span>Password</span>
+                <input required class="input-neutral" id="password" type="password">
+              </div>
+              <div class="login-buttons">
+                <button  id="logInButton" type="submit" >Log-In</button>
+                <button type="button" onclick="openSignUpPopup()">Sign-Up</button>
+              </div>
+              <div class="guest-login">
+                <a href="board.html">Log-In as guest</a>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="signUpContainer" class="sign-up-container d-none">
+      <div id="signUpContent" class="sign-up-content">
+        <div class="sign-up-title">
+          <img class="title-img" src="./src/img/logo.png">
+          <h1>Sign-Up</h1>
+        </div>
+        <div class="sign-up-form">
+          <form onsubmit="checkFormSignUp(); return false">
+            <div class="sign-up-form-cont">
+              <span>First Name</span>
+              <input required id="signUpFirstName" class="input-neutral" type="text">
+            </div>
+            <div class="sign-up-form-cont">
+              <span>Last Name</span>
+              <input required id="signUpLastName" class="input-neutral" type="text">
+            </div>
+            <div class="sign-up-form-cont">
+              <span>E-Mail</span>
+              <input required id="signUpEmail" class="input-neutral" type="email">
+            </div>
+            <div class="sign-up-form-cont">
+              <span>Password</span>
+              <input required id="signUpPassword" class="input-neutral" type="password">
+            </div>
+
+            <div class="sign-up-form-cont">
+              <span>Color</span>
+              <div id="colorPreview" class="color-preview"></div>
+              <select id="colorInput" class="input-neutral" onchange="setColorPreview()">
+                <option value="black">black</option>
+        <option value="red">red</option>
+        <option value="blue">blue</option>
+        <option value="green">green</option>
+        <option value="yellow">yellow</option>
+        <option value="purple">purple</option>
+        <option value="orange">orange</option>
+              </select></div>
+            </div>
+
+
+
+            <div class="sign-up-buttons">
+              <button type="submit" >Sign-up</button>
+              <button type="button" onclick="openSignUpPopup(), resetSignUpFields()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div onclick="togglePopup()" id="popupContainer" class="popup-container d-none">
+      <div id="popupContent" class="popup-content">
+        <h1 id="popupTitle">Title</h1>
+        <span id="popupText">Text</span>
+      </div>
+    </div>
+
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="./styles/board.css" />
+    <link rel="stylesheet" href="./styles/style.css" />
+    <script src="./js/mini_backend.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/board.js"></script>
+    <script src="./js/dev-tools.js"></script>
+
+   
+
+    <title>Join - Board</title>
+  </head>
+
+  <body onload="initBoard()" id="body" >
+    <div include-html="./templates/navbar.html"></div>
+
+    <main>
+      <div class="content-container">
+        <div class="content-container-title">
+          <div class="df-sb">
+            <h1 class="undraggable">Board</h1>
+            <img id="bin" title="drop a ticket to delete" class="delete-icon d-none" src="src/img/delete.png" ondrop="deleteTicket()" ondragover="allowDrop(event)" />
+          </div>
+          <span class="undraggable">Learning Management System Project</span>
+        </div>
+        <div id="mainContentDiv" class="colum-main-content">
+          <div id="toDo">
+            <h2 class="undraggable">TO DO</h2>
+            <div
+              id="todoContent"
+              class="board-main-content"
+              ondrop="moveTo('todo')"
+              ondragover="allowDrop(event)"
+            ></div>
+          </div>
+          <div id="inProgressDiv" class="colum-main-content">
+            <h2 class="undraggable">IN PROGRESS</h2>
+            <div
+              id="inprogressContent"
+              class="board-main-content"
+              ondrop="moveTo('inprogress')"
+              ondragover="allowDrop(event)"
+            ></div>
+          </div>
+          <div id="testingDiv" class="colum-main-content">
+            <h2 class="undraggable">TESTING</h2>
+            <div
+              id="testingContent"
+              class="board-main-content"
+              ondrop="moveTo('testing')"
+              ondragover="allowDrop(event)"
+            ></div>
+          </div>
+          <div id="doneDiv" class="colum-main-content">
+            <h2 class="undraggable">DONE</h2>
+            <div
+              id="doneContent"
+              class="board-main-content"
+              ondrop="moveTo('done')"
+              ondragover="allowDrop(event)"
+            ></div>
+            <div id="responsive-main" class="colum-main-content">
+              <select id="responsiveHeadline" class="undraggable" onchange="initBoard()">
+                <option value="todo">TO DO</option>
+                <option value="inprogress">IN PROGRESS</option>
+                <option value="testing">TESTING</option>
+                <option value="done">DONE</option>
+              </select>
+              <div
+                id="responsiveMainContent"
+                class="board-main-content"
+              ></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

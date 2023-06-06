@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/help.css">
+
+
+    <script src="./js/mini_backend.js"></script>
+    <script src="./js/backlog.js"></script>
+    <script src="./js/help.js"></script>
+
+    <script src="./js/script.js"></script>
+
+    <title>Join - Help</title>
+</head>
+
+<body onload="init()">
+
+    <div style="display:flex">
+        <div include-html="./templates/navbar.html"></div>
+        <main>
+            <div class="content-container">
+                <header class="content-container-title">
+                    <h1>HELP</h1>
+                    <span class="title-description">How to use the Join app</span>
+                </header>
+                <div>
+                    <!-- List -->
+                    <ol>
+                         <li>On this page you can put your log-in data. If you are not registered please click sign up. 
+                            You have also possibility to log in without registration by clicking "log in as guest"</li>
+                        <img onclick="openBigImg('img1')" src="src/img/login.JPG" style="width:400px; cursor:pointer" alt="Log-In" >
+
+                         <li>Please insert your data and create your password as well as the color optionally to be able to log in</li>
+                        <img onclick="openBigImg('img2')" src="src/img/signup.JPG" style="width:300px; cursor:pointer"  alt="SignUp" >
+
+                        <li>Create a task on the "Add Task" page</li>
+                        <img onclick="openBigImg('img3')" src="src/img/addTask.JPG" alt="AddTask" class="help-img">
+
+                        <li>On following "Backlog" page you can find the created tasks.
+                            Put your cursor on the backlog to expand it </li>
+                        <img onclick="openBigImg('img4')" src="src/img/backlog-1.jpg" alt="Backlog" class="help-img">
+
+                           <li>After clicking on it you can expend it. 
+                            Here you have the possiblity to send it to the board, edit or delete it </li>
+                        <img onclick="openBigImg('img5')" src="src/img/backlog-2.jpg" alt="Backlog" class="help-img">
+
+                        <li> If you want to edit it by clicking the edit symbol, you can change the task here and save it new.
+                        </li>
+                        <img onclick="openBigImg('img6')" src="src/img/backlog-edit.jpg" alt="Backlog" class="help-img">
+
+                        <li>The tasks sent to the "Board" page, are displayed first in the "To Do" column and can be
+                            moved
+                            with drag & drop depending on the processing status.</li>
+                        <img onclick="openBigImg('img7')" src="src/img/board.JPG" alt="Board" class="help-img">
+                    </ol>
+                </div>
+            </div>
+
+            <div id="imgBig">
+
+            </div>
+
+        </main>
+
+
+
+
+
+
+</body>

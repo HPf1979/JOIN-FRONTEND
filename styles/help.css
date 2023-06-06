@@ -1,0 +1,165 @@
+li {
+    /* display: flex;*/
+    align-items: center;
+    /* counter-increment: item;*/
+    margin-bottom: 5px;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    text-align: justify;
+}
+
+/*li:before {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 12px;
+    padding: 12px;
+    content: counter(item);
+    background: #4B5AA6;
+    border-radius: 50%;
+    color: white;
+    width: 1.2em;
+    height: 1.2em;
+    min-width: 1.2em;
+    min-height: 1.2em;
+    text-align: center;
+}*/
+
+.help-img {
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.overlay-bg {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background-color: rgba(14, 11, 167, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-imgBig {
+    width: 100%;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.img1-big {
+    cursor: pointer;
+}
+
+.img2-big {
+    cursor: pointer;
+}
+
+@media (max-width:1500px) {
+    .img1-big {
+        width: 25%;
+    }
+
+    .img2-big {
+        width: 30%;
+    }
+
+}
+
+@media (max-width:1200px) {
+    .img1-big {
+        width: 30%;
+    }
+
+    .img2-big {
+        width: 40%;
+    }
+
+
+}
+
+@media (max-width:1110px) {
+    .img1-big {
+        width: 35%;
+    }
+
+    .img2-big {
+        width: 45%;
+    }
+
+}
+
+@media (max-width:800px) {
+    .img1-big {
+        width: 40%;
+    }
+
+    .img2-big {
+        width: 55%;
+    }
+
+}
+
+@media (max-width:700px) {
+    .img1-big {
+        width: 50%;
+    }
+
+    .img2-big {
+        width: 65%;
+    }
+
+}
+
+@media (max-width:600px) {
+    .img1-big {
+        width: 60%;
+    }
+
+    .img2-big {
+        width: 75%;
+    }
+
+
+}
+
+@media (max-width:490px) {
+
+    li {
+        margin-left: -32px;
+        width: 80%;
+    }
+
+    #menubar-responsive {
+        width: 83%;
+    }
+
+    /*.img1-big {
+        width: 70%;
+    }
+
+    .img2-big {
+        width: 85%;
+    }*/
+
+    img {
+        margin-left: -31px;
+    }
+
+    #imgBig {
+        margin-left: -25px;
+    }
+
+}
+
+@media (max-width:400px) {}

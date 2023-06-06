@@ -1,0 +1,78 @@
+<body>
+    <nav id="menubar" class="hide-mobile">
+        <div class="img-join"><img class="" src="src/img/joinlogo.png"></div>
+        <div id="menu-links">
+            <div class="menu-links-mobile">
+                <a href="board.html" id="boardId" class="nav-link">Board</a>
+                <a href="backlog.html" id="backlogId" class="nav-link">Backlog</a>
+            </div>
+            <div class="menu-links-mobile">
+                <a href="add-task.html" id="addTaskId" class="nav-link">Add task</a>
+                <a href="help.html" id="helpId" class="nav-link">Help</a>
+            </div>
+        </div>
+        <div class="user"><img class="" width="70px" src="src/img/user.svg"></div>
+        <div class = "impressum">
+        <a href="impressum.html" >Impressum</a>
+        </div>
+    </nav>
+
+    <nav id="menubar-responsive">
+        <div onclick=showNavbar() class="mobile-menu"><img id="menuButton" src="src/img/menu.svg"></div>
+        <div class="join-logo"><img src="src/img/joinlogo.png"></div>
+    </nav>
+
+    <div id="devTools" class="dev-tools-container d-none">
+        <div class="dev-tools-content">
+            <div class="dev-tools-selection">
+                <button onclick="showUserControl()">User Control</button>
+                <button onclick="showTaskControl()">Task Control</button>
+                <button onclick="openDevTools()">Close</button>
+            </div>
+            <div class="dev-tools-user-control-center">
+
+                <div class="dev-tools-user-overview">
+                    <div id="userOverview" class="user-overview d-none">
+                        <div class="user-oberview-selection">
+                            <span onclick="showUserSelection()">Load User</span>
+                            <span onclick="showRegisterUser()">Register User</span>
+                        </div>
+                        <div id="userAmountSelection" class="user-amount-selection d-none"></div>
+                        <div id="userInfo" class="user-information"></div>
+                    </div>
+                    <div id="registerUserMenu" class="register-user-menu d-none">
+                        <div class="register-user-row">
+                            <span>User-Id:</span>
+                            <span id="regUserId"></span>
+                        </div>
+                        <div class="register-user-row">
+                            <span>1st Name:</span>
+                            <input id="reg-first_name">
+                        </div>
+                        <div class="register-user-row">
+                            <span>2nd Name:</span>
+                            <input id="reg-last_name">
+                        </div>
+                        <div class="register-user-row">
+                            <span>@-Adress:</span>
+                            <input id="reg-email">
+                        </div>
+                        <div class="register-user-row">
+                            <span>Image:</span>
+                            <select id="reg-user_img">
+                                <option></option>
+                                <option>img_01</option>
+                                <option>img_02</option>
+                                <option>img_03</option>
+                                <option>img_04</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="register-user-row">
+                            <span onclick="DEV_saveUser()">SAVE USER TO DATABASE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
