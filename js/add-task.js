@@ -4,7 +4,6 @@ let savedData = [];
 let user = [];
 let assignedUser = [];
 
-
 async function initAddTask() {
     await init();
     await loadUsers();
@@ -12,11 +11,9 @@ async function initAddTask() {
     getActuallyDate();
 }
 
-
 async function loadUsers() {
     user = users;
 }
-
 
 async function saveTickets() {
     let json_data = {
@@ -31,7 +28,24 @@ async function saveTickets() {
         "assignedTo": assignedUser,
     };
     data.push(json_data);
-    await backend.setItem('tickets', JSON.stringify(data));
+/*     await backend.setItem('tickets', JSON.stringify(data)); */
+
+    //NEU NEW ADDED
+        // Code zum Senden der Daten an das Backend (POST-Anfrage)
+    fetch('/api/todos/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(json_data),
+    })
+      .then(response => response.json())
+      .then(result => {   
+        console.log(result);
+      })
+      .catch(error => {
+        console.error(error);
+      });
 }
 
 

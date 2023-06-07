@@ -22,17 +22,7 @@ async function initBoard() {
   //setColor();
 }
 
-// NEU NEW ADDED
-fetch('/api/todos/')  // URL für die Django-API-View, die die Todos-Daten liefert
-  .then(response => response.json())
-  .then(allTasks => {
-    // Verarbeiten Sie die erhaltenen Daten hier
-    console.log(allTasks);
-  })
-  .catch(error => {
-    // Behandeln Sie Fehler hier
-    console.error(error);
-  });
+
 
 /**
  *

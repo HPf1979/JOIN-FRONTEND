@@ -1,4 +1,4 @@
-setURL("https://gruppe-256.developerakademie.net/smallest_backend_ever");
+setURL("https://gruppe-256.developerakademie.net/smallest_backend_ever"); 
 let data = [];
 let users = [];
 
@@ -8,8 +8,8 @@ let taskCategories = {
 };
 
 async function init() {
-  await downloadBackend();
-  await includeHTML();
+await downloadBackend();
+await includeHTML();  
   currentPage();
   resetIdInData();
 }
@@ -17,6 +17,8 @@ async function init() {
 function openDevTools() {
   document.getElementById("devTools").classList.toggle("d-none");
 }
+
+
 
 // Mini Backend
 async function downloadBackend() {
@@ -39,7 +41,7 @@ async function includeHTML() {
       element.innerHTML = "404 Page not found";
     }
   }
-}
+}  
 
 function currentPage() {
   let activePage = window.location.pathname;
