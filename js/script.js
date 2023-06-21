@@ -8,8 +8,7 @@ let taskCategories = {
 };
 
 async function init() {
-await downloadBackend();
-await includeHTML();  
+await includeHTML();   
   currentPage();
   resetIdInData();
 }
@@ -17,17 +16,6 @@ await includeHTML();
 function openDevTools() {
   document.getElementById("devTools").classList.toggle("d-none");
 }
-
-
-
-// Mini Backend
-async function downloadBackend() {
-  await downloadFromServer();
-  data = JSON.parse(backend.getItem("tickets")) || [];
-  users = JSON.parse(backend.getItem("users")) || [];
-}
-
-// Mini Backend end
 
 async function includeHTML() {
   let includeElements = document.querySelectorAll("[include-html]");
@@ -90,16 +78,13 @@ function closeNavbar() {
 }
 
 /**
- *
- *
- *
  * @param {Array} currentUser - the userarray with all important informations
  * @returns the usericon as HTML
  * get the first letters of the first and lastname and the color to create a usericon
  */
 function createUserIcon(currentUser) {
-  let firstName = currentUser.first_name;
-  let secondName = currentUser.last_name;
+  let firstName = currentUser && currentUser.first_name ? currentUser.first_name : '';
+  let secondName = currentUser && currentUser.last_name ? currentUser.last_name : '';
   let firstLetter = firstName.charAt(0).toUpperCase();
   let secondLetter = secondName.charAt(0).toUpperCase();
   return `
@@ -142,13 +127,3 @@ function checkPriority(currentArray) {
   }
 }
 
-//function setColor() {
-//    let allIcons = document.getElementsByClassName('user-icon');
-//    for (let i = 0; i < allIcons.length; i++) {
-//        let icon = allIcons[i];
-//        icon.classList.add()
-//        console.log(icon);
-//    }
-//
-//
-//}

@@ -4,71 +4,95 @@ let savedData = [];
 let user = [];
 let assignedUser = [];
 
+
 async function initAddTask() {
-    await init();
-    await loadUsers();
+    await init();  
+    await loadUsers(); 
+
     generateUserSelection();
     getActuallyDate();
 }
 
 async function loadUsers() {
-    user = users;
+ var myHeaders = new Headers();
+myHeaders.append("Cookie", "csrftoken=zyCgLVAO3oj5XUfvl0E7IzMGbrv6ZneD");
+
+
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch("http://127.0.0.1:8000/api/users/", requestOptions)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    user = data; // put user data from Backend in user array
+    console.log('user in array', user);
+    generateUserSelection(user)})
+  .catch(error => console.log('error', error));
 }
 
-async function saveTickets() {
+async function saveTickets(user_profile) {
+    
+     let assignedUserNames = assignedUser.map(user => ({
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        color: user.color
+    }));
+    console.log ('assignedUserNames',assignedUserNames)
+
+    let assignedUserNamesString = assignedUserNames.map(user => `{id:${user.id}, first_name: '${user.first_name}', last_name: '${user.last_name}', color: '${user.color}'}`).join(',');
+
     let json_data = {
-        "id": data.length,
         "title": savedData[0],
         "category": savedData[1],
         "description": savedData[2],
         "date": "data",
-        "dueTo": savedData[4],
+        "due_date": savedData[4],
         "urgency": savedData[3],
         "status": "backlog",
-        "assignedTo": assignedUser,
+    
+        "assignedTo": assignedUserNamesString,
     };
-    data.push(json_data);
-/*     await backend.setItem('tickets', JSON.stringify(data)); */
+    console.log('json_data', json_data)
+  
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Cookie", "csrftoken=zyCgLVAO3oj5XUfvl0E7IzMGbrv6ZneD");
 
-    //NEU NEW ADDED
-        // Code zum Senden der Daten an das Backend (POST-Anfrage)
-    fetch('/api/todos/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(json_data),
-    })
-      .then(response => response.json())
-      .then(result => {   
-        console.log(result);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    var raw = JSON.stringify(json_data);
+
+    var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+    };
+
+
+    fetch("http://127.0.0.1:8000/api/todos/", requestOptions)
+    .then(response => response.json())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
 }
-
 
 function generateUserSelection() {
     document.getElementById('userSelection').innerHTML = ``;
-    for (let i = 0; i < user.length; i++) {
-
-
-        document.getElementById('userSelection').innerHTML += /*html*/ `
-            <div onclick="assignUser(${user[i].id})" id="userSelection${[i]}" class="user-selection-user">
-                ${createUserIcon(user[i])}
-                <span>${user[i].first_name}</span>
-                <span>${user[i].last_name}</span>
-            </div>
-        `;
-
-    //setColor(user[i]);
-        
-    if (assignedUser.includes(user[i])) {
+     for (let i = 0; i < user.length; i++) {
+        document.getElementById('userSelection').innerHTML += `
+          <div onclick="assignUser(${user[i].id})" id="userSelection${[i]}" class="user-selection-user">
+       ${createUserIcon(user[i])}
+               <span>${user[i].first_name}</span>
+                <span>${user[i].last_name}</span>    
+           </div>
+        `
+        if (assignedUser.includes(user[i])) {
             document.getElementById(`userSelection${i}`).classList.add('user-selection-user-selected');
         }
-
-    }
+     }
 }
 
 
@@ -77,10 +101,9 @@ function getData() { //reading value from input fields
     for (let i = 0; i < arr.length; i++) {
         taskData[i] = document.getElementById(arr[i]);
         savedData.push(taskData[i].value)
+   
     }
-    //return;
 }
-
 
 function saveData() {
     if (check == 'success') {
@@ -89,7 +112,6 @@ function saveData() {
         console.log('failed to save data')
     }
 }
-
 
 function checkForm() {
     getData();
@@ -110,19 +132,16 @@ function checkForm() {
     saveData(taskData);
 }
 
-
 function fail(i) {
     taskData[i].classList.remove('green-border');
     taskData[i].classList.add('red-border');
     return;
 }
 
-
 function success(i) {
     taskData[i].classList.remove('red-border');
     taskData[i].classList.add('green-border');
 }
-
 
 function popupFailed(popupText, popupTitle) {
     popupTitle.innerHTML = `Failed!`;
@@ -132,7 +151,6 @@ function popupFailed(popupText, popupTitle) {
     return;
 }
 
-
 function popupSuccess(popupText, popupTitle) {
     popupTitle.innerHTML = `Success!`;
     popupTitle.classList.add('green-text');
@@ -141,11 +159,9 @@ function popupSuccess(popupText, popupTitle) {
     return;
 }
 
-
 function openPopup() {
     document.getElementById('popup').classList.remove('d-none');
 }
-
 
 function closePopup() {
     document.getElementById('popup').classList.add('d-none');
@@ -154,11 +170,9 @@ function closePopup() {
     }
 }
 
-
 function reloadPage() {
     document.location.reload(true);
 }
-
 
 let openCheck = false;
 function openUserSelection() {
@@ -173,7 +187,6 @@ function openUserSelection() {
     }
 }
 
-
 function closeUserSelection() {
     document.getElementById('userSelectionContainer').classList.add('user-selection-container-closed');
     setTimeout(function () {
@@ -182,24 +195,27 @@ function closeUserSelection() {
     }, 500);
 }
 
-
 function assignUser(userId) {
     let filtered = user.filter(function (ele) {
         return ele.id == userId;
+       
     });
 
-    for (let i = 0; i < assignedUser.length; i++) {
+     for (let i = 0; i < assignedUser.length; i++) {
         let selection = assignedUser[i];
+
         if (userId == selection.id) {
             assignedUser.splice(i, 1);
-            generateAssignedUser();
-            generateUserSelection();
+             generateAssignedUser();
+            generateUserSelection(); 
             return;
         }
     }
+    
     assignedUser.push(filtered[0]);
+    console.log('assignedUser is', assignedUser)
     generateAssignedUser();
-    generateUserSelection();
+    generateUserSelection(); 
 }
 
 
@@ -216,10 +232,7 @@ function generateAssignedUser() {
             </div> 
             `;
             document.getElementById('assignedUser' + i).innerHTML += createUserIcon(currentUser);
-            document.getElementById('assignedUser' + i).innerHTML += `<span>${username}</span>`;
-            //setColor(currentUser);
-
-            
+            document.getElementById('assignedUser' + i).innerHTML += `<span>${username}</span>`;         
         }
     }
 }

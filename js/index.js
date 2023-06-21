@@ -1,31 +1,37 @@
-let user = [];
-
 async function initIndex() {
     await init();
     await loadUsers();
     await loadEvents();
 }
 
-
 async function loadUsers() {
-    user = users;
+   var myHeaders = new Headers();
+    myHeaders.append("Cookie", "csrftoken=zyCgLVAO3oj5XUfvl0E7IzMGbrv6ZneD");
+    
+    // Sending an inquiry to backend with the url/endpoint to get the users
+    var formdata = new FormData();
+
+    var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+    };
+
+fetch("http://127.0.0.1:8000/api/users/", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
 }
 
 async function loadEvents() {
     var input = document.getElementById("password");
     input.addEventListener("keyup", function (event) {
-        if (event.keyCode === 13) {
+        if (event.keyCode === 13) {   //clicking Enter key will also able login
             event.preventDefault();
             document.getElementById("logInButton").click();
         }
     });
 }
-
-
-
-
-
-
 
 function checkForm() {
     let email = document.getElementById('email');
@@ -34,17 +40,36 @@ function checkForm() {
         checkForAvailableUser(email.value, password.value)
 }
 
+async function checkForAvailableUser(email, password) {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
 
-function checkForAvailableUser(email, password) {
-    for (let i = 0; i < user.length; i++) {
-        if (user[i].email == email && user[i].password == password) {
-            welcomePopup(user[i].first_name);
-            return;
-        }
-    }
-    wrongInputPopup()
+    var raw = JSON.stringify({
+        "username": email,
+        "password": password
+    });
+
+    var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:8000/api/login/", requestOptions)
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+      if (data.token) {
+            const first_name = data.first_name
+        welcomePopup(first_name);
+      } else {
+        wrongInputPopup();
+      }
+    })
+    .catch(error => console.log('error', error));
 }
-
 
 function openSignUpPopup() {
     let signUpContainer = document.getElementById('signUpContainer');
@@ -52,30 +77,36 @@ function openSignUpPopup() {
     document.getElementById('signUpContent').classList.toggle('sign-up-container-animation');
 }
 
-
 async function checkFormSignUp() {
-    let firstName = document.getElementById('signUpFirstName');
-    let lastName = document.getElementById('signUpLastName');
-    let email = document.getElementById('signUpEmail');
-    let password = document.getElementById('signUpPassword');
-    let color = document.getElementById('colorInput').value;
-    let user = [];
+    let firstName = document.getElementById('signUpFirstName').value;
+    let lastName = document.getElementById('signUpLastName').value;
+    let email = document.getElementById('signUpEmail').value;
+    let password = document.getElementById('signUpPassword').value;
+    let color = document.getElementById('colorInput').value; 
 
-    if (firstName.value && lastName.value && email.value && password.value) {
+    if (firstName && lastName && email && password) {
         console.log("Success");
-        user = {
-            "id": users.length,
-            "first_name": firstName.value,
-            "last_name": lastName.value,
-            "email": email.value,
-            "password": password.value,
-            "color": color
+        // Sendind post inquiry to save the data in backend into url/endpoint .../signup/..
+        var formdata = new FormData();
+        formdata.append("first_name", firstName);
+        formdata.append("last_name", lastName);
+        formdata.append("email",  email);
+        formdata.append("password", password );
+        formdata.append("color", color); 
+
+        var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow'
         };
-        console.log(user);
-        users.push(user);
-        await backend.setItem('users', JSON.stringify(users));
-        openSignUpPopup()
-        userCreatedPopUp()
+
+    fetch("http://127.0.0.1:8000/api/signup/", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+    
+        openSignUpPopup();
+        userCreatedPopUp(); 
     }
 }
 
@@ -84,7 +115,6 @@ function setColorPreview() {
     let color =  document.getElementById('colorInput').value;
     displayColor.style.backgroundColor = color;
 }
-
 
 function resetSignUpFields() {
     let firstName = document.getElementById('signUpFirstName');
@@ -115,7 +145,6 @@ function resetSignUpFields() {
     password.classList.add('input-neutral');
 }
 
-
 function userCreatedPopUp() {
     let title = document.getElementById('popupTitle');
     let text = document.getElementById('popupText');
@@ -126,25 +155,22 @@ function userCreatedPopUp() {
     text.innerHTML = 'You can now log in\nClick to continue';
 }
 
-
 function togglePopup() {
     document.getElementById('popupContainer').classList.toggle('d-none');
 }
 
-
-function welcomePopup(user) {
+function welcomePopup(first_name) {
     let title = document.getElementById('popupTitle');
     let text = document.getElementById('popupText');
     togglePopup();
     document.getElementById('popupContent').classList.add('open-popup');
 
-    title.innerHTML = `Welcome ${user}!`;
+    title.innerHTML = `Welcome ${first_name}!`;
     text.innerHTML = '';
     setTimeout(function() {
         window.location.href = "./board.html";
-    }, 1000);
+    }, 1500); 
 }
-
 
 function wrongInputPopup() {
     let title = document.getElementById('popupTitle');

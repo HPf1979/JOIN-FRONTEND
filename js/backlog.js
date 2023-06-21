@@ -3,31 +3,59 @@ let taskData = [];
 
 async function initBacklog() {
   await init();
-  setData();
+  await setData();
+  await loadUsers() 
   generateTask();
+
 }
 
-function setData() {
-  availableUsers = users;
-  taskData = data;
+async function loadUsers() {
+  var myHeaders = new Headers();
+  myHeaders.append("Cookie", "csrftoken=zyCgLVAO3oj5XUfvl0E7IzMGbrv6ZneD");
+
+  var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:8000/api/users/", requestOptions)
+  .then(response => response.json())
+  .then(data => {
+    availableUsers = data;}) 
+  .catch(error => console.log('error', error));
+}
+
+async function setData() {
+    const backlog = 'backlog'; // Statuswert für den Backlog
+ try {
+    const response = await fetch(`http://127.0.0.1:8000/api/todos/?status=${backlog}`);
+    const data = await response.json();
+    taskData = data;
+   console.log('taskData', taskData);  
+      
+  } catch (error) {
+    console.log('Error:', error);
+  }  
 }
 
 function openTicket(index) {
-  let allTasks = data;
+  let allTasks = taskData;
+  console.log('allTasks', allTasks);
   let task = allTasks[index];
   let ticketExpanded = document.getElementById(`ticketExpanded${index}`);
   document.getElementById(`ticketButton${index}`).classList.add("d-none");
-  ticketExpanded.classList.remove("d-none");
+   ticketExpanded.classList.remove("d-none");
   ticketExpanded.classList.add(checkPriority(task));
-  expandTicketDetails(index);
-}
+  expandTicketDetails(index); 
+} 
 
 function closeTicket(index) {
-  document.getElementById(`ticketExpanded${index}`).classList.add("d-none");
-  document.getElementById(`ticketButton${index}`).classList.remove("d-none");
+  document.getElementById(`ticketExpanded${index}`).classList.add("d-none"); 
+  document.getElementById(`ticketButton${index}`).classList.remove("d-none"); 
   closeTicketDetails(index);
-  closeEditMode(index);
-}
+  closeEditMode(index);  
+} 
 
 function expandTicketDetails(index) {
   let ticketTitle = document.getElementById(`ticketTitle${index}`);
@@ -61,22 +89,24 @@ function textShow(content, index) {
 }
 
 function generateTask() {
-  document.getElementById("taskContent").innerHTML = ``;
+document.getElementById("taskContent").innerHTML = ``; 
   for (let i = 0; i < taskData.length; i++) {
     let task = taskData[i];
-    if (taskData[i].status == "backlog") {
+   
+   if (task.status == "backlog") {
       document.getElementById("taskContent").innerHTML += taskHtml(i);
       document
         .getElementById("ticketButton" + i)
         .classList.add(checkPriority(task));
       renderAssignedUser(i);
-      addIconsToBacklog(task, i);
-      //renderUserSelection(i);
+       id = task.id;
+          addIconsToBacklog(task, id,i); 
     }
   }
 }
 
 function taskHtml(i) {
+  let task = taskData[i];
   return /*html*/ `
     <div ondblclick="closeTicket(${i})" class="task-ticket-container undraggable">
     <div class="task-ticket" id="taskTicket">
@@ -85,17 +115,15 @@ function taskHtml(i) {
         </div>
         <div class="ticket-user-img" id="assignedUser${i}">
         </div>
-        <div class="d-none" id="userSelection${i}">
-        
-</div>
+        <div class="d-none" id="userSelection${i}"> </div>
         <div id="ticketTitle${i}"  class="ticket-details ticket-title">
-            <span>${taskData[i].title}</span>
+            <span>${task.title}</span>
         </div>
         <div id="ticketCategory${i}" class="ticket-category ticket-details">
-            <span>${taskData[i].category}</span>
+            <span>${task.category}</span>
         </div>
         <div id="ticketDetails${i}" class="ticket-details">
-            <span id="ticketDescription${i}">${taskData[i].description}</span>
+            <span id="ticketDescription${i}">${task.description}</span>
         </div>
         <div id="ticketExpanded${i}" class="ticket-expanded d-none">
             <div class="expanded-user-settings">
@@ -133,29 +161,19 @@ function taskHtml(i) {
             </div>
         </div>
     </div>
-</div>
+  </div>
     `;
 }
-
-//function renderUserSelection(index) {
-//    document.getElementById(`userSelection${index}`).innerHTML = ``;
-//    for (let i = 0; i < availableUsers.length; i++) {
-//        document.getElementById(`userSelection${index}`).innerHTML += /*html*/ `
-//            <div class="user-selection-user" id="userSelectionItem${index}">
-//                <img src="${availableUsers[i].img}">
-//                <span>${availableUsers[i].first_name} ${availableUsers[i].last_name}</span>
-//            </div>
-//        `;
-//        showAssignedUserInSelection(index);
-//    }
-//}
-
-function renderAssignedUser(index) {
+// with the zIndex one can be sure that the users will be shown in 
+// correct sequence if they overlap or are next to each other
+function renderAssignedUser(index) { 
   let zIndex = taskData[index].assignedTo.length;
+
   let left = 0;
   document.getElementById(`assignedUser${index}`).innerHTML = ``;
   if (taskData[index].assignedTo) {
     for (let i = 0; i < taskData[index].assignedTo.length; i++) {
+  
       if (taskData[index].assignedTo) {
         document.getElementById(`assignedUser${index}`).innerHTML += /*html*/ `
                     <!--<img style="left: ${left}px; z-index: ${zIndex};" src="${taskData[index].assignedTo[i].img}">-->
@@ -169,46 +187,105 @@ function renderAssignedUser(index) {
   }
 }
 
-function addIconsToBacklog(task, id) {
-  let target = document.getElementById("iconArea" + id);
-  let allUsers = task["assignedTo"];
-  for (let i = 0; i < allUsers.length; i++) {
-    let thatUser = allUsers[i];
-    target.innerHTML += createUserIcon(thatUser);
-  }
+function addIconsToBacklog(task,id,i) {
+  let target = document.getElementById("iconArea" + i);
+  let allUsers = task["assignedTo"]; 
+
+  // add quotes around the keys and values
+  const validJSON = allUsers.replace(/(\w+):/g, '"$1":').replace(/'/g, '"');
+
+  // Convert the valid JSON to a JavaScript array
+  const usersArray = JSON.parse(`[${validJSON}]`);
+
+  /*console.log('allUsers[0]',usersArray[0]); // {id: 1, first_name: "Herlina", last_name: "Pfeiffer"}*/
+  /*console.log('allUsers[1]',usersArray[1]/* ); // {id: 10, first_name: "Andre", last_name: "Pfeiffer"}*/ 
+
+  for (let i = 0; i < usersArray.length; i++) {
+    let thatUser = usersArray[i];
+    let firstName = thatUser.first_name;
+    target.innerHTML += createUserIcon(thatUser);  
+  } 
+}
+
+function createUserIcon(currentUser) {
+  let firstName = currentUser.first_name;
+  let secondName = currentUser.last_name;
+  let firstLetter = firstName.charAt(0).toUpperCase();
+  let secondLetter = secondName.charAt(0).toUpperCase();
+  return `
+    <div class="user-icon small-icon" id="userIcon">
+        <span class="first-letter">${firstLetter}</span>
+        <span class="second-letter">${secondLetter}</span>
+    </div>
+        `; 
 }
 
 function showAssignedUserInSelection(index) {
   checkIfUserIsAssigned(index);
 }
 
-//
 function checkIfUserIsAssigned(index) {
   for (let i = 0; i < taskData[index].assignedTo.length; i++) {}
 }
 
 function moveTaskToBoard(index) {
-  taskData[index].status = "todo";
-  saveDataToServer();
-  generateTask();
-}
+  const task = taskData[index];
+  const taskId = task.id;
 
-async function saveDataToServer() {
-  await backend.setItem("tickets", JSON.stringify(taskData));
-}
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Cookie", "csrftoken=zyCgLVAO3oj5XUfvl0E7IzMGbrv6ZneD");
+
+  var raw = JSON.stringify({
+  "status": "todo"
+  });
+
+  var requestOptions = {
+  method: 'PATCH',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+  };
+
+  fetch(`http://127.0.0.1:8000/api/todos/statusUpdate/${taskId}/`, requestOptions)
+  .then(response => response.text())
+  .then(result => {console.log(result),
+     console.log('revised allTasks', taskData );
+    })
+  .catch(error => console.log('error', error));
+  
+  taskData.splice(index, 1);
+  generateTask()
+
+} 
 
 function deleteTask(index) {
+  const task = taskData[index];
+  const taskId = task.id;
+
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Cookie", "csrftoken=zyCgLVAO3oj5XUfvl0E7IzMGbrv6ZneD");
+
+  var requestOptions = {
+  method: 'DELETE',
+  headers: myHeaders,
+  redirect: 'follow'
+  };
+
+  fetch(`http://127.0.0.1:8000/api/todos/${taskId}/`, requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
   taskData.splice(index, 1);
-  resetIdInData();
-  generateTask();
-  saveDataToServer();
+  generateTask()
 }
 
 function replaceTagDescription(index) {
   document.getElementById(
     `ticketDetails${index}`
-  ).innerHTML = `<textarea id="ticketDescription${index}">${taskData[index].description}</textarea>`;
-  document
+    ).innerHTML = `<textarea id="ticketDescription${index}">${taskData[index].description}</textarea>`;
+    document
     .getElementById(`ticketDescription${index}`)
     .classList.add("ticket-textarea");
 }
@@ -264,7 +341,6 @@ function revertTagCategory(index) {
 }
 
 function openEditMode(index) {
-  //addUserSelection(index);
   replaceTagDescription(index);
   replaceTagTitle(index);
   replaceTagCategory(index);
@@ -286,16 +362,14 @@ function addAvailableUsersInSelection(index) {
     let availableUser = users[i];
     let fullName = availableUser["first_name"] + availableUser["last_name"];
     target.innerHTML += `
-        <option>${fullName}</option>
-        
+        <option>${fullName}</option>        
         `;
   }
 }
 
 function Selection(index) {
   return `
-    <select id="selection${index}" multiple>
-    
+    <select id="selection${index}" multiple>   
     </select>
     `;
 }
@@ -349,94 +423,36 @@ function getDataFromTicketEdit(index) {
   taskData[index]["title"] = title;
   taskData[index]["category"] = category;
   taskData[index]["description"] = description;
-  saveDataToServer();
+ 
+  const task = taskData[index];
+  const taskId = task.id;
+
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Cookie", "csrftoken=zyCgLVAO3oj5XUfvl0E7IzMGbrv6ZneD");
+
+  var raw = JSON.stringify({
+  "title": title,
+  "category": category,
+  "description": description
+  });
+
+  var requestOptions = {
+  method: 'PATCH',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+  };
+
+  fetch(`http://127.0.0.1:8000/api/todos/update/${taskId}/`, requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
 }
 
 function closeEveryTicketExceptLast(index) {
-  sortTicketsInBacklog();
-  for (let i = 0; i < sorted.length; i++) {
-    closeTicket(sorted[i]);
-  }
-  openTicket(index);
-}
-
-let sorted = [];
-function sortTicketsInBacklog() {
-  sorted = [];
   for (let i = 0; i < taskData.length; i++) {
-    if (taskData[i].status == "backlog") {
-      sorted.push(taskData[i].id);
-    }
+    closeTicket(i);
   }
-}
-
-/*function editTask() {
-   return `
- 
- 
-   <div class="content-container">
-            <div class="content-container-title">
-                <h1>Add Task</h1>
-                <span>Learning Management System Project</span>
-            </div>
-            <div class="task-container">
-                <div class="task-container-content">
-                    <form onsubmit="checkForm(); return false">
-                        <div class="form-left">
-                            <div class="task-title">
-                                <label class="title-label">TITLE</label>
-                                <input required type="text" id="title" required>
-                            </div>
-                            <div class="form-category">
-                                <label class="title-label">CATEGORY</label>
-                                <select required name="Tasks" id="tasks" required>
-                                    <option value="">-- Select task --</option>
-                                    <option value="management">Management</option>
-                                    <option value="programming">Programming</option>
-                                    <option value="design">Design</option>
-                                </select>
-                            </div>
-                            <div class="form-description">
-                                <label class="title-label">DESCRIPTION</label>
-                                <textarea required type="text" id="description" rows="6" required></textarea>
-                            </div>
-                        </div>
-                        <div class="form-right">
-                            <div class="form-due-date">
-                                <label class="title-label">DUE DATE</label>
-                                <input type="date" id="dueTo" required>
-                            </div>
-                            <div class="form-urgency">
-                                <label class="title-label">URGENCY</label>
-                                <select name="Tasks" id="urgency" required>
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                </select>
-                            </div>
-                            <div class="form-assigned-to">
-                                <label class="title-label">ASSIGNED TO</label>
-                                <div class="content-assigned-to">
-                                    </div>
-                                    <div class="assigned-to-user-img">
-                                        <img id="userSelectionBtn" onclick="openUserSelection()" class="assigned-to-user-img-add-user" src="./src/img/icon plus.png">
-                                        <div>
-                                            <div id="assignedUserContainer" class="assigned-user-container"></div>
-                                        </div>
-                                        <div id="userSelectionContainer" class="user-selection-container d-none">
-                                            <div id="userSelection" class="user-selection-content">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="assigned-to-buttons">
-                                    <button type="button" onclick="reloadPage()" class="btn-1">CANCEL</button>
-                                    <button type="submit" class="btn-2">CREATE TASK</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>   `;
-}*/
+  openTicket(index);  
+} 
