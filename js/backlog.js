@@ -247,7 +247,7 @@ function moveTaskToBoard(index) {
   redirect: 'follow'
   };
 
-  fetch(`http://127.0.0.1:8000/api/todos/statusUpdate/${taskId}/`, requestOptions)
+  fetch(`http://127.0.0.1:8000/api/todos/${taskId}/`, requestOptions)
   .then(response => response.text())
   .then(result => {console.log(result),
      console.log('revised allTasks', taskData );
@@ -444,7 +444,7 @@ function getDataFromTicketEdit(index) {
   redirect: 'follow'
   };
 
-  fetch(`http://127.0.0.1:8000/api/todos/update/${taskId}/`, requestOptions)
+  fetch(`http://127.0.0.1:8000/api/todos/${taskId}/`, requestOptions)
   .then(response => response.text())
   .then(result => console.log(result))
   .catch(error => console.log('error', error));

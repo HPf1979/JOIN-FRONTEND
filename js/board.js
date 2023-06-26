@@ -134,7 +134,7 @@ var requestOptions = {
   redirect: 'follow'
 };
 
-fetch(`http://127.0.0.1:8000/api/todos/statusUpdate/${currentDraggedElement}/`, requestOptions)
+fetch(`http://127.0.0.1:8000/api/todos/${currentDraggedElement}/`, requestOptions)
   .then(response => response.json())
   .then(result => {console.log(result), 
     console.log('updated Alltasks', allTasks);
@@ -243,7 +243,7 @@ function backToBacklog(id) {
     redirect: 'follow'
   };
 
-  fetch(`http://127.0.0.1:8000/api/todos/statusUpdate/${id}/`, requestOptions)
+  fetch(`http://127.0.0.1:8000/api/todos/${id}/`, requestOptions)
     .then(response => response.json())
     .then(result => {console.log(result),
       allTasks = allTasks.filter(task => task.id !== id); // Element entfernen
