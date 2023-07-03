@@ -34,16 +34,17 @@ async function loadEvents() {
 }
 
 function checkForm() {
-    let email = document.getElementById('email');
-    let password = document.getElementById('password');
+    let email = document.getElementById('email').value;
+    let password = document.getElementById('password').value;
     
-        checkForAvailableUser(email.value, password.value)
+        checkForAvailableUser(email, password)
 }
 
 async function checkForAvailableUser(email, password) {
-    const myHeaders = new Headers();
+    var myHeaders = new Headers();
+    myHeaders.append("X-CSRFToken", "2tvACqL5g2X0Q1nyTvrbawfSd16yRBun");
     myHeaders.append("Content-Type", "application/json");
-    
+    myHeaders.append("Cookie", "csrftoken=2tvACqL5g2X0Q1nyTvrbawfSd16yRBun; sessionid=8eo2wtjvyuj9guwk41sniwf8qpx7ezak");
 
     var raw = JSON.stringify({
         "username": email,
@@ -58,18 +59,67 @@ async function checkForAvailableUser(email, password) {
     };
 
     fetch("http://127.0.0.1:8000/api/login/", requestOptions)
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-      if (data.token) {
-            const first_name = data.first_name
-        welcomePopup(first_name);
-      } else {
-        wrongInputPopup();
-      }
-    })
-    .catch(error => console.log('error', error));
+        .then(response => response.json())
+        .then(data => {
+            console.log('data', data);
+             if (data.token) {
+                const first_name = data.first_name; 
+                welcomePopup(first_name);
+            } else {
+                wrongInputPopup();
+            }  
+        })
+        .catch(error => console.log('error', error));
 }
+
+// Funktion zum Abrufen des CSRF-Tokens aus dem Cookie
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+/* async function checkForAvailableUser(email, password) {
+    const { url, csrfToken } = window.djangoReverse('api-login');
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("X-CSRFToken", csrfToken);
+
+    var raw = JSON.stringify({
+        "username": email,
+        "password": password
+    });
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.token) {
+                const first_name = data.first_name;
+                welcomePopup(first_name);
+            } else {
+                wrongInputPopup();
+            }
+        })
+        .catch(error => console.log('error', error));
+} */
 
 function openSignUpPopup() {
     let signUpContainer = document.getElementById('signUpContainer');
@@ -86,24 +136,34 @@ async function checkFormSignUp() {
 
     if (firstName && lastName && email && password) {
         console.log("Success");
-        // Sendind post inquiry to save the data in backend into url/endpoint .../signup/..
-        var formdata = new FormData();
-        formdata.append("first_name", firstName);
-        formdata.append("last_name", lastName);
-        formdata.append("email",  email);
-        formdata.append("password", password );
-        formdata.append("color", color); 
+    
+        var myHeaders = new Headers();
+        myHeaders.append("X-CSRFToken", "2tvACqL5g2X0Q1nyTvrbawfSd16yRBun");
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Cookie", "csrftoken=2tvACqL5g2X0Q1nyTvrbawfSd16yRBun; sessionid=8eo2wtjvyuj9guwk41sniwf8qpx7ezak");
+
+        var raw = JSON.stringify({
+        "color": color,
+        "user": {
+            "first_name": firstName,
+            "last_name": lastName,
+            "email": email,
+            "password": "mona"
+            }
+        });
 
         var requestOptions = {
         method: 'POST',
-        body: formdata,
+        headers: myHeaders,
+        body: raw,
         redirect: 'follow'
         };
 
-    fetch("http://127.0.0.1:8000/api/signup/", requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
+
+        fetch("http://127.0.0.1:8000/api/signup/", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
     
         openSignUpPopup();
         userCreatedPopUp(); 

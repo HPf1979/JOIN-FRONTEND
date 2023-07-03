@@ -5,6 +5,8 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+
   <script src="./js/mini_backend.js"></script>
   <script src="./js/script.js"></script>
   <script src="./js/index.js"></script>
@@ -25,7 +27,8 @@
             <h1>Log-In</h1>
           </div>
           <div class="login-section">
-            <form onsubmit="checkForm(); return false">
+            <form onsubmit="checkForm(); return false"> 
+          
               <div class="login-section-email">
                 <span>E-Mail</span>
                 <input required class="input-neutral" id="email" type="email">
